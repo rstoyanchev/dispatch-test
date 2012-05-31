@@ -23,4 +23,8 @@
 		<url-pattern>/servletB/*</url-pattern>
 	</servlet-mapping>
 
+	<welcome-file-list>
+		<welcome-file>servletA</welcome-file>
+	</welcome-file-list>
+
 </web-app>
