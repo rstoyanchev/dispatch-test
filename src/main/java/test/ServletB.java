@@ -31,21 +31,28 @@ public class ServletB extends HttpServlet {
 		executor.submit(new Runnable() {
 			@Override
 			public void run() {
+
+				boolean shouldForward = req.getParameter("forward") != null;
+
 				try {
 					Thread.sleep(3000);
 					logger.debug("RequestURI={}, PathInfo={}", req.getRequestURI(), req.getPathInfo());
 
-//					asyncContext.dispatch("/WEB-INF/view.jsp");
-
-					RequestDispatcher disp = req.getRequestDispatcher("/WEB-INF/view.jsp");
-					disp.include(req, res);
-
+					if (shouldForward) {
+						RequestDispatcher disp = req.getRequestDispatcher("/WEB-INF/view.jsp");
+						disp.forward(req, res);
+					}
+					else {
+						asyncContext.dispatch("/WEB-INF/view.jsp");
+					}
 				}
 				catch (Exception e) {
 					e.printStackTrace();
 				}
 				finally {
-					asyncContext.complete();
+					if (shouldForward) {
+						asyncContext.complete();
+					}
 				}
 			}
 		});

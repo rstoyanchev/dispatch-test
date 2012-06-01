@@ -9,14 +9,16 @@ mvn clean package
 
 Deploy resulting war `target/dispatch-test.war`.
 
-Access ServletA [http://localhost:8080/dispatch-test/servletA](http://localhost:8080/dispatch-test/servletA)
-and ServletB [http://localhost:8080/dispatch-test/servletB](http://localhost:8080/dispatch-test/servletB).
+JSP rendering via `AsyncContext.dispatch`:
+* ServletA [http://localhost:8080/dispatch-test/servletA](http://localhost:8080/dispatch-test/servletA)
+* ServletB [http://localhost:8080/dispatch-test/servletB](http://localhost:8080/dispatch-test/servletB)
+
+JSP rendering via `request.getRequestDispatcher`:
+* ServletA [http://localhost:8080/dispatch-test/servletA?forward=true](http://localhost:8080/dispatch-test/servletA?forward=true)
+* ServletB [http://localhost:8080/dispatch-test/servletB?forward=true](http://localhost:8080/dispatch-test/servletB?forward=true)
 
 ServletA forwards to ServletB, which starts async processing and attempts to render a JSP. 
 Accessing either ServletA or ServletB should produce the same result.
-
-In `ServletB.java` try switching between using `asyncContext.dispatch("")`
-and `RequestDispatcher.forward` from the async thread.
 
 Eclipse
 =======
