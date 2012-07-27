@@ -3,28 +3,10 @@
       xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
       version="3.0">
     
-	<servlet>
-		<servlet-name>servletA</servlet-name>
-		<servlet-class>test.ServletA</servlet-class>
-		<async-supported>true</async-supported>
-	</servlet>
-	<servlet>
-		<servlet-name>servletB</servlet-name>
-		<servlet-class>test.ServletB</servlet-class>
-		<async-supported>true</async-supported>
-	</servlet>
-		
-	<servlet-mapping>
-		<servlet-name>servletA</servlet-name>
-		<url-pattern>/servletA/*</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>servletB</servlet-name>
-		<url-pattern>/servletB/*</url-pattern>
-	</servlet-mapping>
-
+	<!-- See test.confing.WebAppInitializer -->
+	
 	<welcome-file-list>
-		<welcome-file>servletA</welcome-file>
+		<welcome-file>/index.html</welcome-file>
 	</welcome-file-list>
 
 </web-app>
