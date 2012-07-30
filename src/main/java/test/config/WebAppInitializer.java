@@ -26,6 +26,7 @@ import org.springframework.web.WebApplicationInitializer;
 import test.DispatchingAsyncServlet;
 import test.ForwardingAsyncServlet;
 import test.ForwardingServlet;
+import test.RedirectingServlet;
 
 public class WebAppInitializer implements WebApplicationInitializer {
 
@@ -33,9 +34,8 @@ public class WebAppInitializer implements WebApplicationInitializer {
 	public void onStartup(ServletContext servletContext) throws ServletException {
 
 		setupDispatchScenario(servletContext);
-
 		setupForwardScenario(servletContext);
-
+		setupRedirectScenario(servletContext);
 	}
 
 	private void setupDispatchScenario(ServletContext servletContext) {
@@ -43,15 +43,15 @@ public class WebAppInitializer implements WebApplicationInitializer {
 		CountDownLatch latch = new CountDownLatch(1);
 
 		Dynamic servlet;
-		servlet = servletContext.addServlet("DispA", new ForwardingServlet("A", "/dispScenarioB?b=B", latch));
+		servlet = servletContext.addServlet("DispA", new ForwardingServlet("A", "/dispScenarioB/b?b=B", latch));
 		servlet.setAsyncSupported(true);
 		servlet.addMapping("/dispScenarioA/*");
 
-		servlet = servletContext.addServlet("DispB", new ForwardingServlet("B", "/dispScenarioC?c=C", null));
+		servlet = servletContext.addServlet("DispB", new ForwardingServlet("B", "/dispScenarioC/c?c=C", null));
 		servlet.setAsyncSupported(true);
 		servlet.addMapping("/dispScenarioB/*");
 
-		servlet = servletContext.addServlet("DispC", new DispatchingAsyncServlet("C", "/dispScenarioD?d=D", latch));
+		servlet = servletContext.addServlet("DispC", new DispatchingAsyncServlet("C", "/dispScenarioD/d?d=D", latch));
 		servlet.setAsyncSupported(true);
 		servlet.addMapping("/dispScenarioC/*");
 
@@ -65,21 +65,38 @@ public class WebAppInitializer implements WebApplicationInitializer {
 		CountDownLatch latch = new CountDownLatch(1);
 
 		Dynamic servlet;
-		servlet = servletContext.addServlet("ForwardA", new ForwardingServlet("A", "/forwardScenarioB?b=B", latch));
+		servlet = servletContext.addServlet("ForwardA", new ForwardingServlet("A", "/forwardScenarioB/b?b=B", latch));
 		servlet.setAsyncSupported(true);
 		servlet.addMapping("/forwardScenarioA/*");
 
-		servlet = servletContext.addServlet("ForwardB", new ForwardingServlet("B", "/forwardScenarioC?c=C", null));
+		servlet = servletContext.addServlet("ForwardB", new ForwardingServlet("B", "/forwardScenarioC/c?c=C", null));
 		servlet.setAsyncSupported(true);
 		servlet.addMapping("/forwardScenarioB/*");
 
-		servlet = servletContext.addServlet("ForwardC", new ForwardingAsyncServlet("C", "/forwardScenarioD?d=D", latch));
+		servlet = servletContext.addServlet("ForwardC", new ForwardingAsyncServlet("C", "/forwardScenarioD/d?d=D", latch));
 		servlet.setAsyncSupported(true);
 		servlet.addMapping("/forwardScenarioC/*");
 
 		servlet = servletContext.addServlet("ForwardD", new ForwardingServlet("D", "/WEB-INF/page.jsp", null));
 		servlet.setAsyncSupported(true);
 		servlet.addMapping("/forwardScenarioD/*");
+	}
+
+	private void setupRedirectScenario(ServletContext servletContext) {
+
+		Dynamic servlet;
+		servlet = servletContext.addServlet("RedirectA", new DispatchingAsyncServlet("A", "/redirectScenarioB/b?b=B", null));
+		servlet.setAsyncSupported(true);
+		servlet.addMapping("/redirectScenarioA/*");
+
+		servlet = servletContext.addServlet("RedirectB", new RedirectingServlet("B", "../redirectScenarioC/c?c=C", null));
+		servlet.setAsyncSupported(true);
+		servlet.addMapping("/redirectScenarioB/*");
+
+		servlet = servletContext.addServlet("RedirectC", new ForwardingServlet("C", "/WEB-INF/page.jsp", null));
+		servlet.setAsyncSupported(true);
+		servlet.addMapping("/redirectScenarioC/*");
+
 	}
 
 }
