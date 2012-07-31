@@ -26,6 +26,7 @@ import org.springframework.web.WebApplicationInitializer;
 import test.DispatchingAsyncServlet;
 import test.ForwardingAsyncServlet;
 import test.ForwardingServlet;
+import test.JsonServlet;
 import test.RedirectingServlet;
 
 public class WebAppInitializer implements WebApplicationInitializer {
@@ -34,8 +35,12 @@ public class WebAppInitializer implements WebApplicationInitializer {
 	public void onStartup(ServletContext servletContext) throws ServletException {
 
 		setupDispatchScenario(servletContext);
+
 		setupForwardScenario(servletContext);
+
 		setupRedirectScenario(servletContext);
+
+		setupJsonScenario(servletContext);
 	}
 
 	private void setupDispatchScenario(ServletContext servletContext) {
@@ -96,7 +101,18 @@ public class WebAppInitializer implements WebApplicationInitializer {
 		servlet = servletContext.addServlet("RedirectC", new ForwardingServlet("C", "/WEB-INF/page.jsp", null));
 		servlet.setAsyncSupported(true);
 		servlet.addMapping("/redirectScenarioC/*");
+	}
 
+	private void setupJsonScenario(ServletContext servletContext) {
+
+		Dynamic servlet;
+		servlet = servletContext.addServlet("JsonA", new DispatchingAsyncServlet("A", "/jsonScenarioB", null));
+		servlet.setAsyncSupported(true);
+		servlet.addMapping("/jsonScenarioA/*");
+
+		servlet = servletContext.addServlet("JsonB", new JsonServlet());
+		servlet.setAsyncSupported(true);
+		servlet.addMapping("/jsonScenarioB/*");
 	}
 
 }
