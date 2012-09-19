@@ -16,9 +16,11 @@
 	logger.debug("'{}' ({})", "page.jsp", Thread.currentThread().getName().toUpperCase());
 	logger.debug("-----------------------------------------------");
 	logger.debug("request={}, type={}", request, request.getClass().getName());
+	logger.debug("response={}, type={}", response, response.getClass().getName());
 	logger.debug("requestURI={}, contextPath={}, servletPath={}, pathInfo={}",
 			new Object[] {request.getRequestURI(), request.getContextPath(), request.getServletPath(), request.getPathInfo()});
 	logger.debug("parameterMap={}", request.getParameterMap());
+	logger.debug("dispatchType={}", request.getDispatcherType());
 	logger.debug("javax.servlet.forward.request_uri={}", request.getAttribute("javax.servlet.forward.request_uri"));
   %>
 </body>

@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletResponseWrapper;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,26 +55,28 @@ public abstract class BaseServlet extends HttpServlet {
 
 	@Override
 	public void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		request = wrapRequest(request);
-		logState(request);
+		if ((request.getParameter("wrap") != null) && !(request instanceof HttpServletRequestWrapper)) {
+			logger.debug("Wrapping request: {}", request.getClass().getName());
+			request = new HttpServletRequestWrapper(request);
+		}
+		if ((request.getParameter("wrap") != null) && !(response instanceof HttpServletResponseWrapper)) {
+			logger.debug("Wrapping response: {}", response.getClass().getName());
+			response = new HttpServletResponseWrapper(response);
+		}
+		logState(request, response);
 		serviceInternal(request, response);
 	}
 
-	private HttpServletRequest wrapRequest(HttpServletRequest req) {
-		if ((req.getParameter("wrap") != null) && !(req instanceof HttpServletRequestWrapper)) {
-			return new HttpServletRequestWrapper(req);
-		}
-		return req;
-	}
-
-	protected void logState(HttpServletRequest request) {
+	protected void logState(HttpServletRequest request, HttpServletResponse response) {
 		logger.debug("-----------------------------------------------");
 		logger.debug("'{}' ({})", this.name, Thread.currentThread().getName().toUpperCase());
 		logger.debug("-----------------------------------------------");
 		logger.debug("request={}, type={}", request, request.getClass().getName());
+		logger.debug("response={}, type={}", response, response.getClass().getName());
 		logger.debug("requestURI={}, contextPath={}, servletPath={}, pathInfo={}",
 				new Object[] {request.getRequestURI(), request.getContextPath(), request.getServletPath(), request.getPathInfo()});
 		logger.debug("parameterMap={}", request.getParameterMap());
+		logger.debug("dispatcherType={}", request.getDispatcherType());
 		logger.debug("javax.servlet.forward.request_uri={}", request.getAttribute("javax.servlet.forward.request_uri"));
 	}
 

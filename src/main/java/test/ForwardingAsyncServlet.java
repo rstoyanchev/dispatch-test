@@ -28,7 +28,7 @@ public class ForwardingAsyncServlet extends BaseServlet {
 			public void run() {
 				try {
 					await();  // wait for the container thread to finish
-					logState(request);
+					logState(request, response);
 					logAction("Forward from application thread to {}", getTarget());
 					request.getRequestDispatcher(getTarget()).forward(request, response);
 				}

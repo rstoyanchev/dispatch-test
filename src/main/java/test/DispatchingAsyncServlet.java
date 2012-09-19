@@ -27,7 +27,7 @@ public class DispatchingAsyncServlet extends BaseServlet {
 			@Override
 			public void run() {
 				await();  // wait for the container thread to finish
-				logState(request);
+				logState(request, response);
 				logAction("Dispatch from application thread to \"{}\"", getTarget());
 
 				asyncContext.dispatch(getTarget());
